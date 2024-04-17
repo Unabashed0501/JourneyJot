@@ -7,12 +7,11 @@ import 'package:latlong2/latlong.dart';
 import 'package:my_tourist_app/Constants/map_consts.dart';
 import 'package:my_tourist_app/Map/map_data.dart';
 import 'package:my_tourist_app/Map/map_location.dart';
-import 'package:my_tourist_app/Pages/attractions_page.dart';
 import 'package:my_tourist_app/Map/process_attractions.dart';
 import 'dart:async';
 
 class MapPage extends StatefulWidget {
-  final LatLng currentPosition;
+  final LatLng currentPosition; 
   final LatLng? refSearchLocation;
   final String? country;
   const MapPage(
@@ -82,8 +81,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       initialPage: 0,
     );
     attractions = ProcessAttractions.attractions;
-    print(attractions[0]['Longitude']);
-    // stations = ProcessStations.getStationData(widget.country);
     // timerCurrentPosition =
     //     Timer.periodic(const Duration(seconds: 10), (timer) async {
     //   if (!mounted) return;

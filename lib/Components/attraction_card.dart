@@ -84,6 +84,5 @@ class _AttractionCardState extends State<AttractionCard> {
         ),
       ),
     );
-    ;
   }
 }

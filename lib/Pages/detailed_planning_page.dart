@@ -44,28 +44,28 @@ class _DetailedPlanningPageState extends State<DetailedPlanningPage> {
   //   super.initState();
   // }
   List<Widget> buildCartItems(BuildContext context, List<dynamic> cartItems) {
-  return cartItems.map((item) {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: ListTile(
-          title: Text(
-            item[0],
-            style: const TextStyle(fontSize: 18),
+    return cartItems.map((item) {
+      return Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(8),
           ),
-          subtitle: Text(
-            '\$' + item[1],
-            style: const TextStyle(fontSize: 12),
+          child: ListTile(
+            title: Text(
+              item[0],
+              style: const TextStyle(fontSize: 18),
+            ),
+            subtitle: Text(
+              '\$' + item[1],
+              style: const TextStyle(fontSize: 12),
+            ),
           ),
         ),
-      ),
-    );
-  }).toList();
-}
+      );
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +80,10 @@ class _DetailedPlanningPageState extends State<DetailedPlanningPage> {
         ),
         body: Consumer<CartModel>(builder: (context, value, child) {
           print(value.cartItems);
+          // updateTab(value.cartItems, 0);
+          WidgetsBinding.instance!.addPostFrameCallback((_) {
+            updateTab(value.cartItems, 0);
+          });
           return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -174,6 +178,31 @@ class _DetailedPlanningPageState extends State<DetailedPlanningPage> {
   void removeTab(int id) {
     setState(() {
       tabs.removeAt(id);
+    });
+  }
+
+  void updateTab(List<dynamic> cartItems, int index) {
+    setState(() {
+      // tabs = cartItems.map((item) {
+      //   return TabData(
+      //     index: cartItems.indexOf(item),
+      //     title: const Tab(
+      //       child: Text('Day 1'),
+      //     ),
+      //     content: item,
+      //   );
+      int day = index + 1;
+      tabs[index] = TabData(
+          index: index,
+          title: Tab(
+            child: Text('Day $day'),
+          ),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: buildCartItems(context, cartItems),
+          ));
+
+      // Add more tabs as needed
     });
   }
 }

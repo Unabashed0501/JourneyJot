@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:my_tourist_app/Components/big_text.dart';
 import 'package:my_tourist_app/Components/small_text.dart';

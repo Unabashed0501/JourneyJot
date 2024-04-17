@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:my_tourist_app/Components/big_text.dart';
 import 'package:my_tourist_app/Components/small_text.dart';
+import 'package:my_tourist_app/Constants/map_consts.dart';
 
 class SpecialCard extends StatelessWidget {
   final Map<String, dynamic> itinerary;
@@ -10,7 +11,6 @@ class SpecialCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(itinerary);
     return Card(
       elevation: 5,
       shape: RoundedRectangleBorder(
@@ -74,8 +74,8 @@ class GetImageData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String imageURL = itinerary['Photo'] == ""
-        ? "https://media.vietravel.com/images/NewsPicture/Alishan-National-Scenic-Area.jpg"
-        : itinerary['Photo'];
+        ? MapConstants.defaultImageURL
+        : itinerary['Photo'] ?? MapConstants.defaultImageURL;
     return Image.network(
       imageURL,
       fit: BoxFit.cover,

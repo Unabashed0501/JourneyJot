@@ -15,7 +15,6 @@ class SmallText extends StatelessWidget {
     this.fontColor = const Color.fromARGB(255, 0, 0, 0),
     this.fontWeight = FontWeight.normal,
     this.fontStyle = FontStyle.normal,
-    // this.fontFamily = "font-variant-caps: small-caps"
     this.fontFamily = "Poppins",
   });
 

@@ -18,15 +18,19 @@ class CartModel extends ChangeNotifier {
   get shopItems => _shopItems;
 
   // add item to cart
-  void addItemToCart(Map<String, dynamic> itinerary) {
+  void addItemToCart(Map<String, dynamic> itinerary, int day) {
     // _cartItems.add(_shopItems[index]);
-    _cartItems.add([itinerary['Name'], itinerary['Address']]);
+    _cartItems.add({
+      'Name': itinerary['Name'],
+      'Address': itinerary['Address'],
+      'Day': day
+    });
     notifyListeners();
   }
 
   // remove item from cart
   void removeItemFromCart(String name) {
-    _cartItems.removeWhere((itinerary) => itinerary[0] == name);
+    _cartItems.removeWhere((itinerary) => itinerary['Name'] == name);
     notifyListeners();
   }
 

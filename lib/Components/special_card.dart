@@ -1,11 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:my_tourist_app/Components/big_text.dart';
+import 'package:my_tourist_app/Components/like_button.dart';
+import 'package:my_tourist_app/Components/modal_content.dart';
 import 'package:my_tourist_app/Components/small_text.dart';
 import 'package:my_tourist_app/Constants/map_consts.dart';
+import 'package:my_tourist_app/Model/cart_model.dart';
+import 'package:provider/provider.dart';
 
-class SpecialCard extends StatelessWidget {
+class SpecialCard extends StatefulWidget {
   final Map<String, dynamic> itinerary;
   const SpecialCard({super.key, required this.itinerary});
+
+  @override
+  State<SpecialCard> createState() => _SpecialCardState();
+}
+
+class _SpecialCardState extends State<SpecialCard> {
+  late bool isLiked;
+  @override
+  void initState() {
+    super.initState();
+    // print("cartItems");
+    // print(widget.attraction['Name']);
+    print(Provider.of<CartModel>(context, listen: false).cartItems ?? '');
+    isLiked = Provider.of<CartModel>(context, listen: false).cartItems.isEmpty
+        ? false
+        : Provider.of<CartModel>(context, listen: false).cartItems.any((item) =>
+            item.isNotEmpty && item['Name'] == widget.itinerary['Name']);
+    // print('isLiked');
+    // print(isLiked);
+  }
+
+  // toggle like button
+  void toggleLikeButton() {
+    setState(() {
+      isLiked = !isLiked;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +55,13 @@ class SpecialCard extends StatelessWidget {
               children: [
                 const SizedBox(height: 10),
                 BigText(
-                  text: itinerary['Name'] ?? '',
+                  text: widget.itinerary['Name'] ?? '',
                   size: 22.5,
                   fontColor: const Color.fromARGB(255, 189, 189, 189),
                 ),
                 const SizedBox(height: 5),
                 SmallText(
-                  text: itinerary['Address'] ?? 'aaaa',
+                  text: widget.itinerary['Address'] ?? 'aaaa',
                   fontColor: const Color.fromARGB(255, 189, 189, 189),
                 ),
                 const SizedBox(height: 10),
@@ -48,14 +79,54 @@ class SpecialCard extends StatelessWidget {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Hero(
-                    tag: "home_to_info",
-                    child: GetImageData(itinerary: itinerary)),
-              ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Hero(
+                        tag: "home_to_info",
+                        child: GetImageData(itinerary: widget.itinerary)),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                LikeButton(
+                  isLiked: isLiked,
+                  onTap: () {
+                    toggleLikeButton();
+                    if (isLiked) {
+                      showModalBottomSheet<void>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          // Get the list of itinerary days and daily plans
+                          final List<String> itineraryDays = [
+                            'Day 1',
+                            'Day 2',
+                            'Day 3'
+                          ]; // Assuming this is the list of itinerary days
+                          final List<String> dailyPlans = [
+                            'Plan 1',
+                            'Plan 2',
+                            'Plan 3'
+                          ]; // Assuming this is the list of daily plans
+
+                          return ModalContent(
+                              itineraryDays: itineraryDays,
+                              dailyPlans: dailyPlans,
+                              attraction: widget.itinerary);
+                        },
+                      );
+                    } else {
+                      Provider.of<CartModel>(context, listen: false)
+                          .removeItemFromCart(
+                        widget.itinerary['Name'],
+                      );
+                    }
+                  },
+                ),
+              ],
             ),
           ),
           const SizedBox(width: 10),

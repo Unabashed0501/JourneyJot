@@ -1,14 +1,13 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:dynamic_tabbar/dynamic_tabbar.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:my_tourist_app/Map/map_location.dart';
+import 'package:my_tourist_app/Components/small_text.dart';
 import 'package:my_tourist_app/Model/cart_model.dart';
 import 'package:my_tourist_app/Pages/attractions_page.dart';
 import 'package:my_tourist_app/Pages/map_home_page.dart';
-import 'package:my_tourist_app/Pages/map_page.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
-import 'package:geolocator/geolocator.dart';
 
 class DetailedPlanningPage extends StatefulWidget {
   final String itineraryName;
@@ -43,28 +42,64 @@ class _DetailedPlanningPageState extends State<DetailedPlanningPage> {
   //   tabController = TabController(length: tabBarLength, vsync: this);
   //   super.initState();
   // }
-  List<Widget> buildCartItems(BuildContext context, List<dynamic> cartItems) {
-    return cartItems.map((item) {
-      return Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[200],
-            borderRadius: BorderRadius.circular(8),
+
+  Widget proxyDecorator(Widget child, int index, Animation<double> animation,
+      List<dynamic> cartItems) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (BuildContext context, Widget? child) {
+        final double animValue = Curves.easeInOut.transform(animation.value);
+        final double elevation = lerpDouble(1, 6, animValue)!;
+        final double scale = lerpDouble(1, 1.02, animValue)!;
+        final item = cartItems[index];
+        return Transform.scale(
+          scale: scale,
+          // Create a Card based on the color and the content of the dragged one
+          // and set its elevation to the animated value.
+          child: Card(
+            elevation: elevation,
+            color: Colors.green.shade200,
+            child: SizedBox(
+              height: 80,
+              child: Center(
+                child: Text('${item['Name']}'),
+              ),
+            ),
           ),
-          child: ListTile(
+        );
+      },
+      child: child,
+    );
+  }
+
+  ReorderableListView buildCartItems(
+      BuildContext context, List<dynamic> cartItems) {
+    return ReorderableListView(
+        padding: const EdgeInsets.symmetric(horizontal: 40),
+        proxyDecorator: (child, index, animation) =>
+            proxyDecorator(child, index, animation, cartItems),
+        onReorder: (int oldIndex, int newIndex) {
+          setState(() {
+            if (oldIndex < newIndex) {
+              newIndex -= 1;
+            }
+            final dynamic item = cartItems.removeAt(oldIndex);
+            cartItems.insert(newIndex, item);
+          });
+        },
+        children: cartItems.map<Widget>((item) {
+          return ListTile(
+            key: ValueKey(item['Name']),
             title: Text(
-              item[0],
+              item['Name'],
               style: const TextStyle(fontSize: 18),
             ),
             subtitle: Text(
-              '\$' + item[1],
+              '\$' + item['Address'],
               style: const TextStyle(fontSize: 12),
             ),
-          ),
-        ),
-      );
-    }).toList();
+          );
+        }).toList());
   }
 
   @override
@@ -82,7 +117,11 @@ class _DetailedPlanningPageState extends State<DetailedPlanningPage> {
           print(value.cartItems);
           // updateTab(value.cartItems, 0);
           WidgetsBinding.instance!.addPostFrameCallback((_) {
-            updateTab(value.cartItems, 0);
+            for (var day = 1; day <= tabs.length; day++) {
+              List<dynamic> filteredCartItems =
+                  value.cartItems.where((item) => item['Day'] == day).toList();
+              updateTab(filteredCartItems, day);
+            }
           });
           return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,7 +220,7 @@ class _DetailedPlanningPageState extends State<DetailedPlanningPage> {
     });
   }
 
-  void updateTab(List<dynamic> cartItems, int index) {
+  void updateTab(List<dynamic> cartItems, int day) {
     setState(() {
       // tabs = cartItems.map((item) {
       //   return TabData(
@@ -191,17 +230,24 @@ class _DetailedPlanningPageState extends State<DetailedPlanningPage> {
       //     ),
       //     content: item,
       //   );
-      int day = index + 1;
-      tabs[index] = TabData(
+      int index = day - 1;
+      if (cartItems.isEmpty) {
+        tabs[index] = TabData(
+            index: index,
+            title: Tab(
+              child: Text('Day $day'),
+            ),
+            content: const Center(
+                child: SmallText(text: 'No itinerary yet ...', size: 15)));
+      } else {
+        tabs[index] = TabData(
           index: index,
           title: Tab(
             child: Text('Day $day'),
           ),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: buildCartItems(context, cartItems),
-          ));
-
+          content: buildCartItems(context, cartItems),
+        );
+      }
       // Add more tabs as needed
     });
   }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_tourist_app/Components/like_button.dart';
+import 'package:my_tourist_app/Components/modal_content.dart';
+import 'package:my_tourist_app/Components/small_text.dart';
 import 'package:my_tourist_app/Model/cart_model.dart';
 import 'package:my_tourist_app/Pages/attraction_details_page.dart';
 import 'package:provider/provider.dart';
@@ -24,8 +26,8 @@ class _AttractionCardState extends State<AttractionCard> {
     print(Provider.of<CartModel>(context, listen: false).cartItems ?? '');
     isLiked = Provider.of<CartModel>(context, listen: false).cartItems.isEmpty
         ? false
-        : Provider.of<CartModel>(context, listen: false).cartItems.any(
-            (item) => item.isNotEmpty && item[0] == widget.attraction['Name']);
+        : Provider.of<CartModel>(context, listen: false).cartItems.any((item) =>
+            item.isNotEmpty && item['Name'] == widget.attraction['Name']);
     // print('isLiked');
     // print(isLiked);
   }
@@ -58,17 +60,30 @@ class _AttractionCardState extends State<AttractionCard> {
             isLiked: isLiked,
             onTap: () {
               toggleLikeButton();
-              // widget.likes.contains(widget.attraction['Name'])
-              //     ? widget.likes.remove(widget.attraction['Name'])
-              //     : widget.likes.add(widget.attraction['Name']);
               (isLiked)
-                  ? Provider.of<CartModel>(context, listen: false)
-                      .addItemToCart(
-                      widget.attraction,
+                  ? showModalBottomSheet<void>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        // Get the list of itinerary days and daily plans
+                        final List<String> itineraryDays = [
+                          'Day 1',
+                          'Day 2',
+                          'Day 3'
+                        ]; // Assuming this is the list of itinerary days
+                        final List<String> dailyPlans = [
+                          'Plan 1',
+                          'Plan 2',
+                          'Plan 3'
+                        ]; // Assuming this is the list of daily plans
+
+                        return ModalContent(
+                            itineraryDays: itineraryDays,
+                            dailyPlans: dailyPlans,
+                            attraction: widget.attraction);
+                      },
                     )
                   : Provider.of<CartModel>(context, listen: false)
                       .removeItemFromCart(widget.attraction['Name']);
-              print(widget.likes);
             },
           ),
           onTap: () {

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:my_tourist_app/Model/cart_model.dart';
 import 'package:my_tourist_app/Pages/Itinerary_planning_page.dart';
 import 'package:my_tourist_app/Pages/attractions_page.dart';
+import 'package:my_tourist_app/Pages/detailed_planning_page.dart';
 import 'package:my_tourist_app/Theme/app_theme.dart';
 import 'package:my_tourist_app/Pages/map_home_page.dart';
 import 'package:provider/provider.dart';
@@ -21,17 +22,19 @@ class MyApp extends StatelessWidget {
         create: (context) => CartModel(),
         child: GetMaterialApp(
           title: 'My Line Tourist App',
-          theme: AppTheme.themeData(false, context),
+          // theme: AppTheme.themeData(false, context),
           // home: const MyHomePage(title: 'Flutter Map Home Page'),
           initialRoute: ItineraryPlanningPage.id,
           routes: {
             // MenuBook.id: (context) => const MenuBook(),
             // HomeScreen.id: (context) => const HomeScreen(),
-            AttractionsPage.id: (context) => const AttractionsPage(likes:['123']),
+            // AttractionsPage.id: (context) => const AttractionsPage(likes:['123']),
             ItineraryPlanningPage.id: (context) => ItineraryPlanningPage(),
+            // DetailedPlanningPage.id: (context) => DetailedPlanningPage(
+            //     itineraryName: 'Taiwan', selectedDateString: '2022-12-12'),
             // MyHomePage.id: (context) => const MyHomePage(title: 'Flutter Map Home Page'),
             // SignUpScreen.id: (context) => const SignUpScreen(),
-            MapHomePage.id: (context) => const MapHomePage(),
+            // MapHomePage.id: (context) => const MapHomePage(),
           },
           debugShowCheckedModeBanner: false,
         ));

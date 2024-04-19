@@ -9,7 +9,7 @@ class CartModel extends ChangeNotifier {
     ["Chicken", "12.80", "lib/images/chicken.png", Colors.brown],
     ["Water", "1.00", "lib/images/water.png", Colors.blue],
   ];
-  final Map<String, dynamic> itinerary = {};
+  final Map<String, dynamic> attraction = {};
   // list of cart items
   final List _cartItems = [];
 
@@ -18,11 +18,12 @@ class CartModel extends ChangeNotifier {
   get shopItems => _shopItems;
 
   // add item to cart
-  void addItemToCart(Map<String, dynamic> itinerary, int day) {
+  void addItemToCart(String itineraryName, Map<String, dynamic> attraction, int day) {
     // _cartItems.add(_shopItems[index]);
     _cartItems.add({
-      'Name': itinerary['Name'],
-      'Address': itinerary['Address'],
+      'Itinerary': itineraryName,
+      'Name': attraction['Name'],
+      'Address': attraction['Address'],
       'Day': day
     });
     notifyListeners();
@@ -30,8 +31,18 @@ class CartModel extends ChangeNotifier {
 
   // remove item from cart
   void removeItemFromCart(String name) {
-    _cartItems.removeWhere((itinerary) => itinerary['Name'] == name);
+    _cartItems.removeWhere((attraction) => attraction['Name'] == name);
     notifyListeners();
+  }
+
+  List filterCartItemsByItinerary(String itineraryName){
+    List filteredCartItems = [];
+    for (int i = 0; i < _cartItems.length; i++) {
+      if (_cartItems[i]['Itinerary'] == itineraryName) {
+        filteredCartItems.add(_cartItems[i]);
+      }
+    }
+    return filteredCartItems;
   }
 
   // calculate total price

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_tourist_app/Components/big_text.dart';
-import 'package:my_tourist_app/Components/like_button.dart';
-import 'package:my_tourist_app/Components/modal_content.dart';
 import 'package:my_tourist_app/Components/small_text.dart';
 import 'package:my_tourist_app/Constants/map_consts.dart';
-import 'package:my_tourist_app/Model/cart_model.dart';
-import 'package:provider/provider.dart';
+import 'package:my_tourist_app/Theme/app_theme.dart';
 
 class ItineraryCard extends StatelessWidget {
   final Map<String, dynamic> itinerary;
@@ -30,12 +27,12 @@ class ItineraryCard extends StatelessWidget {
                 BigText(
                   text: itinerary['Name'] ?? '',
                   size: 22.5,
-                  fontColor: Color.fromARGB(255, 6, 6, 6),
+                  fontColor: AppTheme.textColor,
                 ),
                 const SizedBox(height: 5),
                 SmallText(
                   text: itinerary['Date'] ?? '2024-04-19',
-                  fontColor: Color.fromARGB(255, 6, 6, 6),
+                  fontColor: AppTheme.textColor,
                 ),
                 const SizedBox(height: 10),
                 // Row(

@@ -8,8 +8,14 @@ import 'package:my_tourist_app/Model/cart_model.dart';
 import 'package:provider/provider.dart';
 
 class SpecialCard extends StatefulWidget {
-  final Map<String, dynamic> itinerary;
-  const SpecialCard({super.key, required this.itinerary});
+  final Map<String, dynamic> attraction;
+  final String itineraryName;
+  final int numberOfDays;
+  const SpecialCard(
+      {super.key,
+      required this.attraction,
+      required this.itineraryName,
+      required this.numberOfDays});
 
   @override
   State<SpecialCard> createState() => _SpecialCardState();
@@ -22,11 +28,11 @@ class _SpecialCardState extends State<SpecialCard> {
     super.initState();
     // print("cartItems");
     // print(widget.attraction['Name']);
-    print(Provider.of<CartModel>(context, listen: false).cartItems ?? '');
+    // print(Provider.of<CartModel>(context, listen: false).cartItems ?? '');
     isLiked = Provider.of<CartModel>(context, listen: false).cartItems.isEmpty
         ? false
         : Provider.of<CartModel>(context, listen: false).cartItems.any((item) =>
-            item.isNotEmpty && item['Name'] == widget.itinerary['Name']);
+            item.isNotEmpty && item['Name'] == widget.attraction['Name']);
     // print('isLiked');
     // print(isLiked);
   }
@@ -55,13 +61,13 @@ class _SpecialCardState extends State<SpecialCard> {
               children: [
                 const SizedBox(height: 10),
                 BigText(
-                  text: widget.itinerary['Name'] ?? '',
+                  text: widget.attraction['Name'] ?? '',
                   size: 22.5,
                   fontColor: const Color.fromARGB(255, 189, 189, 189),
                 ),
                 const SizedBox(height: 5),
                 SmallText(
-                  text: widget.itinerary['Address'] ?? 'aaaa',
+                  text: widget.attraction['Address'] ?? 'aaaa',
                   fontColor: const Color.fromARGB(255, 189, 189, 189),
                 ),
                 const SizedBox(height: 10),
@@ -88,12 +94,17 @@ class _SpecialCardState extends State<SpecialCard> {
                     borderRadius: BorderRadius.circular(10),
                     child: Hero(
                         tag: "home_to_info",
-                        child: GetImageData(itinerary: widget.itinerary)),
+                        child: GetImageData(itinerary: widget.attraction)),
                   ),
                 ),
                 const SizedBox(height: 10),
                 LikeButton(
                   isLiked: isLiked,
+                  day: Provider.of<CartModel>(context, listen: false)
+                      .cartItems
+                      .firstWhere(
+                          (item) => item['Name'] == widget.attraction['Name'],
+                          orElse: () => {'Day': 0})['Day'],
                   onTap: () {
                     toggleLikeButton();
                     if (isLiked) {
@@ -101,27 +112,26 @@ class _SpecialCardState extends State<SpecialCard> {
                         context: context,
                         builder: (BuildContext context) {
                           // Get the list of itinerary days and daily plans
-                          final List<String> itineraryDays = [
-                            'Day 1',
-                            'Day 2',
-                            'Day 3'
-                          ]; // Assuming this is the list of itinerary days
-                          final List<String> dailyPlans = [
-                            'Plan 1',
-                            'Plan 2',
-                            'Plan 3'
-                          ]; // Assuming this is the list of daily plans
+                          List<String> itineraryDays = List.generate(
+                            widget.numberOfDays,
+                            (index) => 'Day ${index + 1}',
+                          );
+                          List<String> dailyPlans = List.generate(
+                            widget.numberOfDays,
+                            (index) => 'Plan ${index + 1}',
+                          );
 
                           return ModalContent(
                               itineraryDays: itineraryDays,
                               dailyPlans: dailyPlans,
-                              attraction: widget.itinerary);
+                              attraction: widget.attraction,
+                              itineraryName: widget.itineraryName);
                         },
                       );
                     } else {
                       Provider.of<CartModel>(context, listen: false)
                           .removeItemFromCart(
-                        widget.itinerary['Name'],
+                        widget.attraction['Name'],
                       );
                     }
                   },

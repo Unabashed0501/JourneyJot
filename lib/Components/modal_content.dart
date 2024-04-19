@@ -7,18 +7,21 @@ class ModalContent extends StatelessWidget {
   final List<String> itineraryDays;
   final List<String> dailyPlans;
   final dynamic attraction;
+  final String itineraryName;
 
   const ModalContent({
+    super.key,
     required this.itineraryDays,
     required this.dailyPlans,
     required this.attraction,
+    required this.itineraryName,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 300,
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -26,7 +29,7 @@ class ModalContent extends StatelessWidget {
             text: 'Add to which day',
             size: 20,
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Expanded(
             child: ListView.builder(
               itemCount: itineraryDays.length,
@@ -35,21 +38,13 @@ class ModalContent extends StatelessWidget {
                   title: Text(itineraryDays[index]),
                   subtitle: Text(dailyPlans[index]),
                   onTap: () {
-                    print('Selected day: ${itineraryDays[index]}');
                     Provider.of<CartModel>(context, listen: false)
-                        .addItemToCart(attraction, index + 1);
+                        .addItemToCart(itineraryName, attraction, index + 1);
                     Navigator.pop(context);
                   },
                 );
               },
             ),
-          ),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('Close BottomSheet'),
           ),
         ],
       ),

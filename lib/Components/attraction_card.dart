@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_tourist_app/Components/like_button.dart';
 import 'package:my_tourist_app/Components/modal_content.dart';
-import 'package:my_tourist_app/Components/small_text.dart';
 import 'package:my_tourist_app/Model/cart_model.dart';
 import 'package:my_tourist_app/Pages/attraction_details_page.dart';
 import 'package:provider/provider.dart';

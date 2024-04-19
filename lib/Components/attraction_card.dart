@@ -9,8 +9,14 @@ import 'package:provider/provider.dart';
 class AttractionCard extends StatefulWidget {
   final dynamic attraction;
   final List<String> likes;
-  const AttractionCard(
-      {super.key, required this.attraction, required this.likes});
+  final String itineraryName;
+  final int numberOfDays;
+  AttractionCard(
+      {super.key,
+      required this.attraction,
+      required this.likes,
+      required this.itineraryName, 
+      required this.numberOfDays});
 
   @override
   State<AttractionCard> createState() => _AttractionCardState();
@@ -23,10 +29,13 @@ class _AttractionCardState extends State<AttractionCard> {
     super.initState();
     // print("cartItems");
     // print(widget.attraction['Name']);
-    print(Provider.of<CartModel>(context, listen: false).cartItems ?? '');
-    isLiked = Provider.of<CartModel>(context, listen: false).cartItems.isEmpty
+    // print(Provider.of<CartModel>(context, listen: false).cartItems ?? '');
+    List filterCartItemsByItinerary =
+        Provider.of<CartModel>(context, listen: false)
+            .filterCartItemsByItinerary(widget.itineraryName);
+    isLiked = filterCartItemsByItinerary.isEmpty
         ? false
-        : Provider.of<CartModel>(context, listen: false).cartItems.any((item) =>
+        : filterCartItemsByItinerary.any((item) =>
             item.isNotEmpty && item['Name'] == widget.attraction['Name']);
     // print('isLiked');
     // print(isLiked);
@@ -58,6 +67,10 @@ class _AttractionCardState extends State<AttractionCard> {
           ),
           trailing: LikeButton(
             isLiked: isLiked,
+            day: Provider.of<CartModel>(context, listen: false)
+                .cartItems
+                .firstWhere((item) => item['Name'] == widget.attraction['Name'],
+                    orElse: () => {'Day': 0})['Day'],
             onTap: () {
               toggleLikeButton();
               (isLiked)
@@ -65,21 +78,21 @@ class _AttractionCardState extends State<AttractionCard> {
                       context: context,
                       builder: (BuildContext context) {
                         // Get the list of itinerary days and daily plans
-                        final List<String> itineraryDays = [
-                          'Day 1',
-                          'Day 2',
-                          'Day 3'
-                        ]; // Assuming this is the list of itinerary days
-                        final List<String> dailyPlans = [
-                          'Plan 1',
-                          'Plan 2',
-                          'Plan 3'
-                        ]; // Assuming this is the list of daily plans
+                        List<String> itineraryDays = List.generate(
+                            widget.numberOfDays,
+                            (index) => 'Day ${index + 1}',
+                          );
+                          List<String> dailyPlans = List.generate(
+                            widget.numberOfDays,
+                            (index) => 'Plan ${index + 1}',
+                          );
 
                         return ModalContent(
-                            itineraryDays: itineraryDays,
-                            dailyPlans: dailyPlans,
-                            attraction: widget.attraction);
+                          itineraryDays: itineraryDays,
+                          dailyPlans: dailyPlans,
+                          attraction: widget.attraction,
+                          itineraryName: widget.itineraryName,
+                        );
                       },
                     )
                   : Provider.of<CartModel>(context, listen: false)

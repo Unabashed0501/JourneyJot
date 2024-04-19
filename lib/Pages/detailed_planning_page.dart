@@ -1,26 +1,62 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:dynamic_tabbar/dynamic_tabbar.dart';
+import 'package:my_tourist_app/Components/big_text.dart';
+import 'package:my_tourist_app/Components/reorderable_list_tile.dart';
 import 'package:my_tourist_app/Components/small_text.dart';
 import 'package:my_tourist_app/Model/cart_model.dart';
 import 'package:my_tourist_app/Pages/attractions_page.dart';
+import 'package:my_tourist_app/Pages/itinerary_planning_page.dart';
 import 'package:my_tourist_app/Pages/map_home_page.dart';
+import 'package:my_tourist_app/Theme/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 
 class DetailedPlanningPage extends StatefulWidget {
   final String itineraryName;
   final DateTime selectedDate;
-
+  final DateTime selectedEndDate;
+  static String id = 'detailedPlanningPage';
   DetailedPlanningPage(
-      {required this.itineraryName, required this.selectedDate});
+      {required this.itineraryName,
+      required this.selectedDate,
+      required this.selectedEndDate});
 
   @override
   State<DetailedPlanningPage> createState() => _DetailedPlanningPageState();
 }
 
 class _DetailedPlanningPageState extends State<DetailedPlanningPage> {
+  List<TabData> generateTabs(int numberOfTabs) {
+    List<TabData> tabs = [];
+    for (int i = 1; i <= numberOfTabs; i++) {
+      tabs.add(
+        TabData(
+          index: i,
+          title: Tab(
+            child: Text('Day $i'),
+          ),
+          content: Center(child: Text('Content for Tab $i')),
+        ),
+      );
+    }
+    return tabs;
+  }
+
+  int calculateDaysDifference(DateTime startDate, DateTime endDate) {
+    DateTime start =
+        DateTime.utc(startDate.year, startDate.month, startDate.day);
+    DateTime end = DateTime.utc(endDate.year, endDate.month, endDate.day);
+
+    int differenceInMilliseconds =
+        end.millisecondsSinceEpoch - start.millisecondsSinceEpoch;
+
+    int differenceInDays =
+        (differenceInMilliseconds / (1000 * 60 * 60 * 24)).round();
+
+    return differenceInDays.abs();
+  }
+
   List<TabData> tabs = [
     TabData(
       index: 1,
@@ -29,98 +65,117 @@ class _DetailedPlanningPageState extends State<DetailedPlanningPage> {
       ),
       content: const Center(child: Text('Content for Tab 1')),
     ),
-    // Add more tabs as needed
   ];
-  // @override
-  // void initState() {
-  //   // Dispose of the previous TabController if it exists
-  //   // if (tabController != null) {
-  //   //   tabController.dispose();
-  //   // }
+  int daysDifference = 0;
 
-  //   // Create TabController with initial tabBarLength
-  //   tabController = TabController(length: tabBarLength, vsync: this);
-  //   super.initState();
-  // }
-
-  Widget proxyDecorator(Widget child, int index, Animation<double> animation,
-      List<dynamic> cartItems) {
-    return AnimatedBuilder(
-      animation: animation,
-      builder: (BuildContext context, Widget? child) {
-        final double animValue = Curves.easeInOut.transform(animation.value);
-        final double elevation = lerpDouble(1, 6, animValue)!;
-        final double scale = lerpDouble(1, 1.02, animValue)!;
-        final item = cartItems[index];
-        return Transform.scale(
-          scale: scale,
-          // Create a Card based on the color and the content of the dragged one
-          // and set its elevation to the animated value.
-          child: Card(
-            elevation: elevation,
-            color: Colors.green.shade200,
-            child: SizedBox(
-              height: 80,
-              child: Center(
-                child: Text('${item['Name']}'),
-              ),
-            ),
-          ),
-        );
-      },
-      child: child,
-    );
+  @override
+  void initState() {
+    super.initState();
+    daysDifference = calculateDaysDifference(widget.selectedDate, widget.selectedEndDate);
+    tabs = generateTabs(daysDifference+1);
   }
 
   ReorderableListView buildCartItems(
       BuildContext context, List<dynamic> cartItems) {
-    return ReorderableListView(
-        padding: const EdgeInsets.symmetric(horizontal: 40),
-        proxyDecorator: (child, index, animation) =>
-            proxyDecorator(child, index, animation, cartItems),
-        onReorder: (int oldIndex, int newIndex) {
-          setState(() {
-            if (oldIndex < newIndex) {
-              newIndex -= 1;
-            }
-            final dynamic item = cartItems.removeAt(oldIndex);
-            cartItems.insert(newIndex, item);
-          });
-        },
-        children: cartItems.map<Widget>((item) {
-          return ListTile(
-            key: ValueKey(item['Name']),
-            title: Text(
-              item['Name'],
-              style: const TextStyle(fontSize: 18),
+    final Color oddItemColor = Colors.lime.shade100;
+    final Color evenItemColor = Colors.deepPurple.shade100;
+    final List<Card> cards = <Card>[
+      for (int index = 0; index < cartItems.length; index += 1)
+        Card(
+          key: ValueKey(index),
+          color: index.isOdd ? oddItemColor : evenItemColor,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: SizedBox(
+              height: 80,
+              child: Center(
+                child: BigText(text: '${cartItems[index]['Name']}', size: 15),
+              ),
             ),
-            subtitle: Text(
-              '\$' + item['Address'],
-              style: const TextStyle(fontSize: 12),
+          ),
+        ),
+    ];
+
+    Widget proxyDecorator(
+        Widget child, int index, Animation<double> animation) {
+      return AnimatedBuilder(
+        animation: animation,
+        builder: (BuildContext context, Widget? child) {
+          final double animValue = Curves.easeInOut.transform(animation.value);
+          final double elevation = lerpDouble(1, 6, animValue)!;
+          final double scale = lerpDouble(1, 1.02, animValue)!;
+          return Transform.scale(
+            scale: scale,
+            // Create a Card based on the color and the content of the dragged one
+            // and set its elevation to the animated value.
+            child: Card(
+              elevation: elevation,
+              color: cards[index].color,
+              child: cards[index].child,
             ),
           );
-        }).toList());
+        },
+        child: child,
+      );
+    }
+
+    return ReorderableListView(
+      padding: const EdgeInsets.symmetric(horizontal: 40),
+      proxyDecorator: proxyDecorator,
+      onReorder: (int oldIndex, int newIndex) {
+        setState(() {
+          if (oldIndex < newIndex) {
+            newIndex -= 1;
+          }
+          final int item = cartItems.removeAt(oldIndex);
+          cartItems.insert(newIndex, item);
+        });
+      },
+      children: cards,
+    );
+  }
+
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          ItineraryPlanningPage(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return child;
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('詳細行程規劃'),
-          // bottom: TabBar(
-          //   isScrollable: true,
-          //   tabs: _buildTabBarItems(), // Build TabBar items based on tabBarLength
-          //   controller: tabController,
+          title: const BigText(text: 'Scheduling...'),
+          backgroundColor: AppTheme.appBarColor,
+          // leading: IconButton(
+          //   onPressed: () {
+          //     Navigator.popUntil(context, ModalRoute.withName('/itineraryPlanningPage'));
+          //     // Navigator.of(context).push(
+          //     // MaterialPageRoute(
+          //     //   builder: (context) => ItineraryPlanningPage(),
+          //     // ),
+          //   },
+          //   icon: const Icon(Icons.close),
           // ),
         ),
         body: Consumer<CartModel>(builder: (context, value, child) {
-          print(value.cartItems);
+          // print(value.cartItems);
           // updateTab(value.cartItems, 0);
           WidgetsBinding.instance!.addPostFrameCallback((_) {
+            List filteredCartItemsByItinerary =
+                Provider.of<CartModel>(context, listen: false)
+                    .filterCartItemsByItinerary(widget.itineraryName);
+            print(filteredCartItemsByItinerary);
             for (var day = 1; day <= tabs.length; day++) {
-              List<dynamic> filteredCartItems =
-                  value.cartItems.where((item) => item['Day'] == day).toList();
-              updateTab(filteredCartItems, day);
+              List<dynamic> filteredCartItemsByDay =
+                  filteredCartItemsByItinerary
+                      .where((item) => item['Day'] == day)
+                      .toList();
+              updateTab(filteredCartItemsByDay, day);
             }
           });
           return Column(
@@ -146,7 +201,7 @@ class _DetailedPlanningPageState extends State<DetailedPlanningPage> {
             FloatingActionButton(
               onPressed: () {
                 addTab();
-                print(tabs);
+                print('tab added');
               },
               child: Icon(Icons.add),
             ),
@@ -156,8 +211,10 @@ class _DetailedPlanningPageState extends State<DetailedPlanningPage> {
               child: const Icon(Icons.edit),
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: ((context) => const AttractionsPage(
+                    builder: ((context) => AttractionsPage(
                           likes: ['123'],
+                          itineraryName: widget.itineraryName,
+                          numberOfDays: daysDifference,
                         ))));
               },
             ),
@@ -167,21 +224,18 @@ class _DetailedPlanningPageState extends State<DetailedPlanningPage> {
               child: const Icon(Icons.map_outlined),
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: ((context) => const MapHomePage())));
+                    builder: ((context) =>
+                        MapHomePage(itineraryName: widget.itineraryName, numberOfDays: daysDifference))));
               },
             ),
-            // FloatingActionButton.small(
-            //   // shape: const CircleBorder(),
-            //   heroTag: null,
-            //   child: const Icon(Icons.share),
-            //   onPressed: () {
-            // final state = _key.currentState;
-            // if (state != null) {
-            //   debugPrint('isOpen:${state.isOpen}');
-            //   state.toggle();
-            // }
-            // },
-            // ),
+            FloatingActionButton(
+              // shape: const CircleBorder(),
+              heroTag: null,
+              child: const Icon(Icons.close),
+              onPressed: () {
+                removeTab(0);
+              },
+            ),
           ],
         ));
   }
@@ -222,14 +276,6 @@ class _DetailedPlanningPageState extends State<DetailedPlanningPage> {
 
   void updateTab(List<dynamic> cartItems, int day) {
     setState(() {
-      // tabs = cartItems.map((item) {
-      //   return TabData(
-      //     index: cartItems.indexOf(item),
-      //     title: const Tab(
-      //       child: Text('Day 1'),
-      //     ),
-      //     content: item,
-      //   );
       int index = day - 1;
       if (cartItems.isEmpty) {
         tabs[index] = TabData(
@@ -248,7 +294,6 @@ class _DetailedPlanningPageState extends State<DetailedPlanningPage> {
           content: buildCartItems(context, cartItems),
         );
       }
-      // Add more tabs as needed
     });
   }
 }

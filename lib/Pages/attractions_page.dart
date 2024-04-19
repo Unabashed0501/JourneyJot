@@ -7,7 +7,13 @@ import 'package:provider/provider.dart';
 
 class AttractionsPage extends StatefulWidget {
   final List<String> likes;
-  const AttractionsPage({super.key, required this.likes});
+  final String itineraryName;
+  final int numberOfDays;
+  const AttractionsPage(
+      {super.key,
+      required this.likes,
+      required this.itineraryName,
+      required this.numberOfDays});
   static String id = 'attractions_page';
   @override
   _AttractionsPageState createState() => _AttractionsPageState();
@@ -102,6 +108,8 @@ class _AttractionsPageState extends State<AttractionsPage> {
                         return AttractionCard(
                           attraction: attraction,
                           likes: widget.likes,
+                          itineraryName: widget.itineraryName,
+                          numberOfDays: widget.numberOfDays,
                         );
                       },
                     );

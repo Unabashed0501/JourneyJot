@@ -20,30 +20,30 @@ class AttractionDetailsPage extends StatelessWidget {
             Image.network(attraction['Photo'] == ""
                 ? MapConstants.defaultImageURL
                 : attraction['Photo'] ?? attraction['Photo']),
-            SizedBox(height: 16.0),
-            Text(
+            const SizedBox(height: 16.0),
+            const Text(
               'Address:',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             Text(attraction['Address']),
-            SizedBox(height: 16.0),
-            Text(
+            const SizedBox(height: 16.0),
+            const Text(
               'Brief Descriptions:',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             Text(attraction['HostWords']),
-            SizedBox(height: 16.0),
-            Text(
+            const SizedBox(height: 16.0),
+            const Text(
               'TEL:',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             Text(attraction['Tel']),
-            SizedBox(height: 16.0),
-            Text(
+            const SizedBox(height: 16.0),
+            const Text(
               'Website:',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
-            Text(attraction['Url'] ?? '暫無網址'),
+            Text(attraction['Url'] ?? 'URL Not Found'),
           ],
         ),
       ),

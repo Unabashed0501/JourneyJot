@@ -44,14 +44,7 @@ abstract class GetCurrentLocation {
         desiredAccuracy: LocationAccuracy.best);
     LatLng currentLocation = LatLng(position.latitude, position.longitude);
     if (!hasPermission || kIsWeb) {
-      print("country: ");
-      print(country);
-      if (country == "Taiwan") {
-        // return MapConstants.myLocation[country]!;
         return currentLocation;
-      } else {
-        return MapConstants.myLocation["Taiwan"]!;
-      }
     }
     List<Placemark> placemark = [];
     try {

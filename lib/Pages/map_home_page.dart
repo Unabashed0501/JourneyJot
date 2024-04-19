@@ -7,8 +7,11 @@ import 'package:my_tourist_app/Pages/map_page.dart';
 import 'package:my_tourist_app/Map/process_attractions.dart';
 
 class MapHomePage extends StatelessWidget {
-  const MapHomePage({super.key});
+  const MapHomePage(
+      {super.key, required this.itineraryName, required this.numberOfDays});
   static String id = 'home_page';
+  final String itineraryName;
+  final int numberOfDays;
 
   // Check Current Position
   @override
@@ -23,11 +26,13 @@ class MapHomePage extends StatelessWidget {
             print("load all data");
             return LoadAllData(
               currentPosition: currentPosition,
+              itineraryName: itineraryName,
+              numberOfDays: numberOfDays,
             );
           } else {
             print("not done");
-            print(snapshot.connectionState);
-            print(snapshot.data);
+            // print(snapshot.connectionState);
+            // print(snapshot.data);
             return const Loading();
           }
         });
@@ -36,9 +41,13 @@ class MapHomePage extends StatelessWidget {
 
 class LoadAllData extends StatelessWidget {
   final LatLng currentPosition;
+  final String itineraryName;
+  final int numberOfDays;
   const LoadAllData({
     super.key,
     required this.currentPosition,
+    required this.itineraryName,
+    required this.numberOfDays,
   });
 
   @override
@@ -53,6 +62,8 @@ class LoadAllData extends StatelessWidget {
             return MyHomePage(
               currentPosition: currentPosition,
               title: "Tourist App",
+              itineraryName: itineraryName,
+              numberOfDays: numberOfDays,
             );
           } else {
             return const Loading();
@@ -63,9 +74,16 @@ class LoadAllData extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage(
-      {super.key, required this.title, required this.currentPosition});
+      {super.key,
+      required this.title,
+      required this.currentPosition,
+      required this.itineraryName,
+      required this.numberOfDays});
   final String title;
   final LatLng currentPosition;
+  final String itineraryName;
+  final int numberOfDays;
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -82,8 +100,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     title = widget.title;
     // locations = ProcessCities.citiesData;
     currentPosition = widget.currentPosition;
-    currentWidget =
-        MapPage(country: 'Taiwan', currentPosition: currentPosition);
+    currentWidget = MapPage(
+      country: 'Taiwan',
+      currentPosition: currentPosition,
+      itineraryName: widget.itineraryName,
+      numberOfDays: widget.numberOfDays,
+    );
   }
 
   @override
@@ -95,7 +117,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       body: MapPage(
         country: 'Taiwan',
         currentPosition: currentPosition,
-        refSearchLocation: const LatLng(25.034724, 121.565175),
+        refSearchLocation: currentPosition,
+        itineraryName: widget.itineraryName,
+        numberOfDays: widget.numberOfDays,
       ),
     );
   }

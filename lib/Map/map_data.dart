@@ -5,9 +5,15 @@ import 'package:my_tourist_app/Components/special_card.dart';
 
 class MapData extends StatefulWidget {
   const MapData(
-      {super.key, required this.attraction, required this.currentPosition});
+      {super.key,
+      required this.attraction,
+      required this.currentPosition,
+      required this.itineraryName,
+      required this.numberOfDays});
   final Map<String, dynamic> attraction;
   final LatLng currentPosition;
+  final String itineraryName;
+  final int numberOfDays;
 
   @override
   State<MapData> createState() => _MapDataState();
@@ -37,7 +43,10 @@ class _MapDataState extends State<MapData> {
               ),
             );
           },
-          child: SpecialCard(itinerary: attraction)),
+          child: SpecialCard(
+              attraction: attraction,
+              itineraryName: widget.itineraryName,
+              numberOfDays: widget.numberOfDays)),
     );
   }
 }

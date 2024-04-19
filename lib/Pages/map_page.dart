@@ -14,11 +14,15 @@ class MapPage extends StatefulWidget {
   final LatLng currentPosition; 
   final LatLng? refSearchLocation;
   final String? country;
+  final String itineraryName;
+  final int numberOfDays;
   const MapPage(
       {super.key,
       required this.currentPosition,
       this.refSearchLocation,
-      this.country});
+      this.country, 
+      required this.itineraryName, 
+      required this.numberOfDays});
   // ignore: constant_identifier_names
   static const String ACCESS_TOKEN = String.fromEnvironment("ACCESS_TOKEN");
   static String id = "map_page";
@@ -238,6 +242,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     return MapData(
                       attraction: attractions[argsort[index]],
                       currentPosition: currentLocation,
+                      itineraryName: widget.itineraryName,
+                      numberOfDays: widget.numberOfDays,
                     );
                   },
                 )

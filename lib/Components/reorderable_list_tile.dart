@@ -18,7 +18,6 @@ class _ReorderableListTileState extends State<ReorderableListTile> {
   void initState() {
     super.initState();
     _items = widget.cartItems;
-    // print(_items[0]);r
   }
 
   @override

@@ -26,15 +26,10 @@ class _SpecialCardState extends State<SpecialCard> {
   @override
   void initState() {
     super.initState();
-    // print("cartItems");
-    // print(widget.attraction['Name']);
-    // print(Provider.of<CartModel>(context, listen: false).cartItems ?? '');
     isLiked = Provider.of<CartModel>(context, listen: false).cartItems.isEmpty
         ? false
         : Provider.of<CartModel>(context, listen: false).cartItems.any((item) =>
             item.isNotEmpty && item['Name'] == widget.attraction['Name']);
-    // print('isLiked');
-    // print(isLiked);
   }
 
   // toggle like button

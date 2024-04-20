@@ -51,14 +51,8 @@ abstract class GetCurrentLocation {
       placemark =
           await placemarkFromCoordinates(position.latitude, position.longitude);
     } catch (e) {
-      // print(e);
-      // web error: MissingPluginException
-      // print(MapConstants.myLocation[country]!);
       return currentLocation;
     }
-
-    // ignore: non_constant_identifier_names
-    // print(placemark);
     String GPScountry = placemark[0].country!;
     if (((GPScountry == "台灣" || GPScountry == "Taiwan") &&
         country == "Taiwan")) {

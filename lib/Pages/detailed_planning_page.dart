@@ -151,25 +151,12 @@ class _DetailedPlanningPageState extends State<DetailedPlanningPage> {
         appBar: AppBar(
           title: const BigText(text: 'Scheduling...'),
           backgroundColor: AppTheme.appBarColor,
-          // leading: IconButton(
-          //   onPressed: () {
-          //     Navigator.popUntil(context, ModalRoute.withName('/itineraryPlanningPage'));
-          //     // Navigator.of(context).push(
-          //     // MaterialPageRoute(
-          //     //   builder: (context) => ItineraryPlanningPage(),
-          //     // ),
-          //   },
-          //   icon: const Icon(Icons.close),
-          // ),
         ),
         body: Consumer<CartModel>(builder: (context, value, child) {
-          // print(value.cartItems);
-          // updateTab(value.cartItems, 0);
           WidgetsBinding.instance!.addPostFrameCallback((_) {
             List filteredCartItemsByItinerary =
                 Provider.of<CartModel>(context, listen: false)
                     .filterCartItemsByItinerary(widget.itineraryName);
-            print(filteredCartItemsByItinerary);
             for (var day = 1; day <= tabs.length; day++) {
               List<dynamic> filteredCartItemsByDay =
                   filteredCartItemsByItinerary
@@ -201,7 +188,6 @@ class _DetailedPlanningPageState extends State<DetailedPlanningPage> {
             FloatingActionButton(
               onPressed: () {
                 addTab();
-                print('tab added');
               },
               child: Icon(Icons.add),
             ),

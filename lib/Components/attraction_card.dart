@@ -26,9 +26,6 @@ class _AttractionCardState extends State<AttractionCard> {
   @override
   void initState() {
     super.initState();
-    // print("cartItems");
-    // print(widget.attraction['Name']);
-    // print(Provider.of<CartModel>(context, listen: false).cartItems ?? '');
     List filterCartItemsByItinerary =
         Provider.of<CartModel>(context, listen: false)
             .filterCartItemsByItinerary(widget.itineraryName);
@@ -36,8 +33,6 @@ class _AttractionCardState extends State<AttractionCard> {
         ? false
         : filterCartItemsByItinerary.any((item) =>
             item.isNotEmpty && item['Name'] == widget.attraction['Name']);
-    // print('isLiked');
-    // print(isLiked);
   }
 
   // toggle like button

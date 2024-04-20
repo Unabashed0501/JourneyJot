@@ -22,17 +22,12 @@ class MapHomePage extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.done &&
               snapshot.hasData) {
             LatLng currentPosition = snapshot.data as LatLng;
-            // print(currentPosition);
-            print("load all data");
             return LoadAllData(
               currentPosition: currentPosition,
               itineraryName: itineraryName,
               numberOfDays: numberOfDays,
             );
           } else {
-            print("not done");
-            // print(snapshot.connectionState);
-            // print(snapshot.data);
             return const Loading();
           }
         });
@@ -58,7 +53,6 @@ class LoadAllData extends StatelessWidget {
         ]),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            print("done");
             return MyHomePage(
               currentPosition: currentPosition,
               title: "Tourist App",

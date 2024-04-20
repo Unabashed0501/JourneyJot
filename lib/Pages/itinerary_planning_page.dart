@@ -163,7 +163,6 @@ class _ItineraryPlanningPageState extends State<ItineraryPlanningPage> {
                     onChanged: (value) {
                       itineraryName = value;
                       isNameDuplicate = checkForDuplicateName(itineraryName);
-                      print(isNameDuplicate);
                     },
                   ),
                   SizedBox(height: 20),
@@ -189,16 +188,11 @@ class _ItineraryPlanningPageState extends State<ItineraryPlanningPage> {
                                 showDayOfWeek: true,
                                 // This is called when the user changes the date.
                                 onDateTimeChanged: (newDate) {
-                                  print('change');
-                                  print(newDate.toString());
-                                  print(selectedDate.toString());
                                   setState(() {
                                     selectedDate = newDate;
                                     selectedDateString =
                                         '${newDate.year}-${newDate.month}-${newDate.day}';
                                   });
-                                  print(selectedDate.day);
-                                  print(selectedDateString);
                                 },
                               ),
                             ),
@@ -234,9 +228,6 @@ class _ItineraryPlanningPageState extends State<ItineraryPlanningPage> {
                                     selectedEndDateString =
                                         '${newDate.year}-${newDate.month}-${newDate.day}';
                                   });
-
-                                  print(selectedEndDate.day);
-                                  print(selectedEndDateString);
                                 },
                               ),
                             ),
@@ -336,14 +327,7 @@ class _ItineraryPlanningPageState extends State<ItineraryPlanningPage> {
         selectedDate = pickedDate;
         selectedDateString = pickedDate.toString();
       });
-      // itinerary.add({
-      //   'name': itineraryName,
-      //   'date': pickedDate,
-      //   'attractions': [],
-      // });
     }
-    // print(selectedDate);
-    print(selectedDateString);
   }
 }
 

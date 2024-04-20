@@ -56,10 +56,6 @@ class _AttractionsPageState extends State<AttractionsPage> {
       },
     );
     if (response.statusCode == 200) {
-      // print(jsonDecode(response.body).firstWhere((element) {
-      //       return element['ID'] == 224;
-      //     })['Photo'] ==
-      //     "");
       setState(() {
         attractions = jsonDecode(response.body);
         filteredAttractions = attractions;
@@ -67,10 +63,6 @@ class _AttractionsPageState extends State<AttractionsPage> {
     } else {
       throw Exception('Failed to load attractions');
     }
-    // } catch (e) {
-    //   print(e.toString());
-    //   return;
-    // }
   }
 
   @override

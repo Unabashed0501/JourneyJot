@@ -116,7 +116,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    print(refLocation);
     return Stack(
       children: [
         FlutterMap(

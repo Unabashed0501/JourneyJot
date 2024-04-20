@@ -21,14 +21,7 @@ abstract class ProcessAttractions {
       },
     );
     if (response.statusCode == 200) {
-      // print(jsonDecode(response.body).firstWhere((element) {
-      //       return element['ID'] == 224;
-      //     })['Photo'] ==
-      //     "");
-      print('fetch data works');
-      // setState(() {
       attractions = jsonDecode(response.body);
-      // });
     } else {
       throw Exception('Failed to load attractions');
     }

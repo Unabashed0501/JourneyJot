@@ -106,8 +106,6 @@ class _DetailedPlanningPageState extends State<DetailedPlanningPage> {
           final double scale = lerpDouble(1, 1.02, animValue)!;
           return Transform.scale(
             scale: scale,
-            // Create a Card based on the color and the content of the dragged one
-            // and set its elevation to the animated value.
             child: Card(
               elevation: elevation,
               color: cards[index].color,

@@ -26,27 +26,9 @@ class MyApp extends StatelessWidget {
           // home: const MyHomePage(title: 'Flutter Map Home Page'),
           initialRoute: ItineraryPlanningPage.id,
           routes: {
-            // MenuBook.id: (context) => const MenuBook(),
-            // HomeScreen.id: (context) => const HomeScreen(),
-            // AttractionsPage.id: (context) => const AttractionsPage(likes:['123']),
-            ItineraryPlanningPage.id: (context) => ItineraryPlanningPage(),
-            // DetailedPlanningPage.id: (context) => DetailedPlanningPage(
-            //     itineraryName: 'Taiwan', selectedDateString: '2022-12-12'),
-            // MyHomePage.id: (context) => const MyHomePage(title: 'Flutter Map Home Page'),
-            // SignUpScreen.id: (context) => const SignUpScreen(),
-            // MapHomePage.id: (context) => const MapHomePage(),
+            ItineraryPlanningPage.id: (context) => ItineraryPlanningPage(),           
           },
           debugShowCheckedModeBanner: false,
         ));
-    // Widget build(BuildContext context) {
-    //   return MaterialApp(
-    //     title: 'Flutter Demo',
-    //     theme: ThemeData(
-    //       colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-    //       useMaterial3: true,
-    //     ),
-    //     home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    //   );
-    // }
   }
 }

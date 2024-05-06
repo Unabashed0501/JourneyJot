@@ -155,8 +155,8 @@ class GetImageData extends StatelessWidget {
       fit: BoxFit.cover,
       errorBuilder: (context, error, stackTrace) {
         return const Placeholder(
-          fallbackHeight: 200, // Placeholder 的高度
-          color: Colors.grey, // 替代內容的顏色
+          fallbackHeight: 200, 
+          color: Colors.grey, 
         );
       },
     );

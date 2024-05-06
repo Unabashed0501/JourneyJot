@@ -1,2 +1,9 @@
 # my_tourist_app
 my_tourist_app/
+
+
+/.dart_tool/
+/build/
+/.vscode/
+/.flutter-plugins
+/.flutter-plugins-dependencies

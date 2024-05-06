@@ -48,10 +48,11 @@ class _ItineraryPlanningPageState extends State<ItineraryPlanningPage> {
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
               // background color
-              style: ButtonStyle(
-                backgroundColor:
-                    WidgetStateProperty.all<Color>(Colors.yellow.shade200),
-              ),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              // ButtonStyle(
+              //   backgroundColor:
+                    // WidgetStateProperty.all<Color>(Colors.yellow.shade200),
+              // ),
               onPressed: () {
                 _showCreateItineraryDialog(context);
               },

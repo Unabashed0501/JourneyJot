@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_tourist_app/Components/attraction_card.dart';
 import 'package:my_tourist_app/Model/cart_model.dart';
-import 'package:provider/provider.dart';
+import 'package:my_tourist_app/Redux/actions.dart';
+import 'package:redux/redux.dart';
 
 class AttractionsPage extends StatefulWidget {
   final List<String> likes;
@@ -23,10 +25,12 @@ class _AttractionsPageState extends State<AttractionsPage> {
   List<dynamic> attractions = [];
   List<dynamic> filteredAttractions = [];
   TextEditingController searchController = TextEditingController();
+  late final Store<List<Map<String, dynamic>>> store;
 
   @override
   void initState() {
     super.initState();
+    // store = ReduxSetup.store;
     fetchAttractions();
   }
 
@@ -69,7 +73,7 @@ class _AttractionsPageState extends State<AttractionsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tourist Attractions'),
+        title: const Text('Tourist Attractions'),
       ),
       body: Column(
         children: [
@@ -77,7 +81,7 @@ class _AttractionsPageState extends State<AttractionsPage> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: searchController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Search by name',
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(),
@@ -89,50 +93,49 @@ class _AttractionsPageState extends State<AttractionsPage> {
           ),
           Expanded(
             child: attractions.isEmpty
-                ? Center(
+                ? const Center(
                     child: CircularProgressIndicator(),
                   )
-                : Consumer<CartModel>(builder: (context, value, child) {
-                    return ListView.builder(
-                      itemCount: filteredAttractions.length,
-                      itemBuilder: (context, index) {
-                        final attraction = filteredAttractions[index];
-                        return AttractionCard(
-                          attraction: attraction,
-                          likes: widget.likes,
-                          itineraryName: widget.itineraryName,
-                          numberOfDays: widget.numberOfDays,
-                        );
-                      },
-                    );
-                  }),
+                : StoreConnector<List<CartModel>, ViewModel>(
+                    converter: (store) => ViewModel.create(store),
+                    builder: (context, model) {
+                      return ListView.builder(
+                        itemCount: filteredAttractions.length,
+                        itemBuilder: (context, index) {
+                          final attraction = filteredAttractions[index];
+                          return AttractionCard(
+                            attraction: attraction,
+                            likes: widget.likes,
+                            itineraryName: widget.itineraryName,
+                            numberOfDays: widget.numberOfDays,
+                          );
+                        },
+                      );
+                    },
+                  ),
           ),
+          // Expanded(
+          //   child: attractions.isEmpty
+          //       ? Center(
+          //           child: CircularProgressIndicator(),
+          //         )
+          //       : Consumer<CartModel>(builder: (context, value, child) {
+          //           return ListView.builder(
+          //             itemCount: filteredAttractions.length,
+          //             itemBuilder: (context, index) {
+          //               final attraction = filteredAttractions[index];
+          //               return AttractionCard(
+          //                 attraction: attraction,
+          //                 likes: widget.likes,
+          //                 itineraryName: widget.itineraryName,
+          //                 numberOfDays: widget.numberOfDays,
+          //               );
+          //             },
+          //           );
+          //         }),
+          // ),
         ],
       ),
-
-      // ListTile(
-      //   title: Text(attraction['Name']),
-      //   subtitle: Text(attraction['OpenHours']),
-      //   // show images to same size
-      //   leading: Image.network(
-      //     attraction['Photo'] == ""
-      //         ? 'https://media.vietravel.com/images/NewsPicture/Alishan-National-Scenic-Area.jpg'
-      //         : attraction['Photo'],
-      //     width: 100,
-      //     height: 100,
-      //     fit: BoxFit.cover,
-      //   ),
-      //   onTap: () {
-      //     // Navigate to attraction details page
-      //     Navigator.of(context).push(
-      //       MaterialPageRoute(
-      //         builder: (context) => AttractionDetailsPage(
-      //           attraction: attraction,
-      //         ),
-      //       ),
-      //     );
-      //   },
-      // );
     );
   }
 }

@@ -4,12 +4,14 @@ import 'package:my_tourist_app/Pages/attraction_details_page.dart';
 import 'package:my_tourist_app/Components/special_card.dart';
 
 class MapData extends StatefulWidget {
-  const MapData(
-      {super.key,
-      required this.attraction,
-      required this.currentPosition,
-      required this.itineraryName,
-      required this.numberOfDays});
+  const MapData({
+    Key? key,
+    required this.attraction,
+    required this.currentPosition,
+    required this.itineraryName,
+    required this.numberOfDays,
+  }) : super(key: key);
+
   final Map<String, dynamic> attraction;
   final LatLng currentPosition;
   final String itineraryName;
@@ -34,19 +36,22 @@ class _MapDataState extends State<MapData> {
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: GestureDetector(
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => AttractionDetailsPage(
-                  attraction: attraction,
-                ),
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => AttractionDetailsPage(
+                attraction: attraction,
               ),
-            );
-          },
-          child: SpecialCard(
-              attraction: attraction,
-              itineraryName: widget.itineraryName,
-              numberOfDays: widget.numberOfDays)),
+            ),
+          );
+        },
+        child: SpecialCard(
+          attraction: attraction,
+          itineraryName: widget.itineraryName,
+          numberOfDays: widget.numberOfDays,
+          // store: widget.store, 
+        ),
+      ),
     );
   }
 }

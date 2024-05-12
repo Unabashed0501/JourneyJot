@@ -7,8 +7,11 @@ import 'package:my_tourist_app/Pages/map_page.dart';
 import 'package:my_tourist_app/Map/process_attractions.dart';
 
 class MapHomePage extends StatelessWidget {
-  const MapHomePage(
-      {super.key, required this.itineraryName, required this.numberOfDays});
+  const MapHomePage({
+    super.key,
+    required this.itineraryName,
+    required this.numberOfDays,
+  });
   static String id = 'home_page';
   final String itineraryName;
   final int numberOfDays;
@@ -26,6 +29,7 @@ class MapHomePage extends StatelessWidget {
               currentPosition: currentPosition,
               itineraryName: itineraryName,
               numberOfDays: numberOfDays,
+              // store: store,
             );
           } else {
             return const Loading();
@@ -38,11 +42,13 @@ class LoadAllData extends StatelessWidget {
   final LatLng currentPosition;
   final String itineraryName;
   final int numberOfDays;
+  // final Store<List<Map<String, dynamic>>> store;
   const LoadAllData({
     super.key,
     required this.currentPosition,
     required this.itineraryName,
     required this.numberOfDays,
+    // required this.store,
   });
 
   @override
@@ -92,7 +98,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     title = widget.title;
-    // locations = ProcessCities.citiesData;
     currentPosition = widget.currentPosition;
     currentWidget = MapPage(
       country: 'Taiwan',

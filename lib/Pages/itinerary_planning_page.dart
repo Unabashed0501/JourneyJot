@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_utils/get_utils.dart';
 import 'package:my_tourist_app/Components/big_text.dart';
 import 'package:my_tourist_app/Components/itinerary_card.dart';
 import 'package:my_tourist_app/Components/small_text.dart';
@@ -9,8 +8,11 @@ import 'package:my_tourist_app/Theme/app_theme.dart';
 
 class ItineraryPlanningPage extends StatefulWidget {
   @override
+  // ignore: library_private_types_in_public_api
   _ItineraryPlanningPageState createState() => _ItineraryPlanningPageState();
   static String id = 'itineraryPlanningPage';
+
+  const ItineraryPlanningPage({super.key});
 }
 
 class _ItineraryPlanningPageState extends State<ItineraryPlanningPage> {
@@ -20,6 +22,8 @@ class _ItineraryPlanningPageState extends State<ItineraryPlanningPage> {
   late String selectedDateString;
   late String selectedEndDateString;
   bool isNameDuplicate = false;
+  // final store = Store(cartReducer, initialState: initialState);
+
   // DateTime time = DateTime(2024, 04, 19, 00, 35);
   // DateTime dateTime = DateTime(2024, 04, 19, 23, 45);
 
@@ -48,11 +52,8 @@ class _ItineraryPlanningPageState extends State<ItineraryPlanningPage> {
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
               // background color
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              // ButtonStyle(
-              //   backgroundColor:
-                    // WidgetStateProperty.all<Color>(Colors.yellow.shade200),
-              // ),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.yellow.shade200),
               onPressed: () {
                 _showCreateItineraryDialog(context);
               },
@@ -66,7 +67,6 @@ class _ItineraryPlanningPageState extends State<ItineraryPlanningPage> {
                 child: ListView.builder(
                   itemCount: itinerary.length,
                   itemBuilder: (context, index) {
-                    final day = itinerary[index];
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -76,12 +76,12 @@ class _ItineraryPlanningPageState extends State<ItineraryPlanningPage> {
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => DetailedPlanningPage(
-                                    itineraryName: itinerary[index]['Name'],
-                                    selectedDate: selectedDate,
-                                    selectedEndDate: selectedEndDate,
-                                  ),
-                                ),
+                                    builder: (context) => (DetailedPlanningPage(
+                                          itineraryName: itinerary[index]
+                                              ['Name'],
+                                          selectedDate: selectedDate,
+                                          selectedEndDate: selectedEndDate,
+                                        ))),
                               );
                             },
                             child: ItineraryCard(
@@ -134,7 +134,7 @@ class _ItineraryPlanningPageState extends State<ItineraryPlanningPage> {
       isScrollControlled: true,
       builder: (BuildContext context) {
         return Container(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
                 // mainAxisSize: MainAxisSize.max,
                 // crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -143,7 +143,7 @@ class _ItineraryPlanningPageState extends State<ItineraryPlanningPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       IconButton(
-                        icon: Icon(Icons.close),
+                        icon: const Icon(Icons.close),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
@@ -152,10 +152,10 @@ class _ItineraryPlanningPageState extends State<ItineraryPlanningPage> {
                         text: 'Build New Itinerary',
                         fontWeight: FontWeight.bold,
                       ),
-                      SizedBox(width: 48.0),
+                      const SizedBox(width: 48.0),
                     ],
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   TextField(
                     decoration: InputDecoration(
                       labelText: 'Itinerary Name',
@@ -171,7 +171,7 @@ class _ItineraryPlanningPageState extends State<ItineraryPlanningPage> {
                     children: <Widget>[
                       _DatePickerItem(
                         children: [
-                          SmallText(
+                          const SmallText(
                             text: 'Start Date: ',
                             fontWeight: FontWeight.bold,
                             size: 20,
@@ -242,7 +242,8 @@ class _ItineraryPlanningPageState extends State<ItineraryPlanningPage> {
                       (isValidDateTime(selectedDate, selectedEndDate))
                           ? const SizedBox(height: 40)
                           : const SmallText(
-                              text: 'Error Name or Date', fontColor: Colors.red),
+                              text: 'Error Name or Date',
+                              fontColor: Colors.red),
                       ElevatedButton(
                         onPressed: isNameDuplicate ||
                                 !isValidDateTime(selectedDate, selectedEndDate)
@@ -258,12 +259,12 @@ class _ItineraryPlanningPageState extends State<ItineraryPlanningPage> {
                                 });
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) => (DetailedPlanningPage(
-                                      itineraryName: itineraryName,
-                                      selectedDate: selectedDate,
-                                      selectedEndDate: selectedEndDate,
-                                    )),
-                                  ),
+                                      builder: (context) =>
+                                          (DetailedPlanningPage(
+                                            itineraryName: itineraryName,
+                                            selectedDate: selectedDate,
+                                            selectedEndDate: selectedEndDate,
+                                          ))),
                                 );
                               },
                         // add background color

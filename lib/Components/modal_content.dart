@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:my_tourist_app/Components/small_text.dart';
 import 'package:my_tourist_app/Model/cart_model.dart';
-import 'package:provider/provider.dart';
+import 'package:my_tourist_app/Redux/actions.dart';
 
 class ModalContent extends StatelessWidget {
   final List<String> itineraryDays;
@@ -10,12 +11,12 @@ class ModalContent extends StatelessWidget {
   final String itineraryName;
 
   const ModalContent({
-    super.key,
+    Key? key,
     required this.itineraryDays,
     required this.dailyPlans,
     required this.attraction,
     required this.itineraryName,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,15 +35,21 @@ class ModalContent extends StatelessWidget {
             child: ListView.builder(
               itemCount: itineraryDays.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(itineraryDays[index]),
-                  subtitle: Text(dailyPlans[index]),
-                  onTap: () {
-                    Provider.of<CartModel>(context, listen: false)
-                        .addItemToCart(itineraryName, attraction, index + 1);
-                    Navigator.pop(context);
-                  },
-                );
+                return StoreConnector<List<CartModel>, ViewModel>(
+                    converter: (store) => ViewModel.create(store),
+                    builder: (context, ViewModel model) => ListTile(
+                          title: Text(itineraryDays[index]),
+                          subtitle: Text(dailyPlans[index]),
+                          onTap: () {
+                            model.onItemAdded(CartModel(
+                              itinerary: itineraryName,
+                              name: attraction['Name'],
+                              address: attraction['Address'],
+                              day: index + 1,
+                            ));
+                            Navigator.pop(context);
+                          },
+                        ));
               },
             ),
           ),

@@ -1,35 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:my_tourist_app/Components/big_text.dart';
 import 'package:my_tourist_app/Components/like_button.dart';
 import 'package:my_tourist_app/Components/modal_content.dart';
 import 'package:my_tourist_app/Components/small_text.dart';
 import 'package:my_tourist_app/Constants/map_consts.dart';
 import 'package:my_tourist_app/Model/cart_model.dart';
-import 'package:provider/provider.dart';
+import 'package:my_tourist_app/Redux/actions.dart';
 
 class SpecialCard extends StatefulWidget {
   final Map<String, dynamic> attraction;
   final String itineraryName;
   final int numberOfDays;
-  const SpecialCard(
-      {super.key,
-      required this.attraction,
-      required this.itineraryName,
-      required this.numberOfDays});
+
+  const SpecialCard({
+    super.key,
+    required this.attraction,
+    required this.itineraryName,
+    required this.numberOfDays,
+  });
 
   @override
   State<SpecialCard> createState() => _SpecialCardState();
 }
 
 class _SpecialCardState extends State<SpecialCard> {
-  late bool isLiked;
+  late bool isLiked = true;
   @override
   void initState() {
     super.initState();
-    isLiked = Provider.of<CartModel>(context, listen: false).cartItems.isEmpty
-        ? false
-        : Provider.of<CartModel>(context, listen: false).cartItems.any((item) =>
-            item.isNotEmpty && item['Name'] == widget.attraction['Name']);
+    StoreConnector<List<CartModel>, ViewModel>(
+      converter: (store) => ViewModel.create(store),
+      builder: (context, model) {
+        setState(() {
+          isLiked = model.cartItems.any((item) =>
+              item.isNotEmpty() && item.name == widget.attraction['Name']);
+        });
+        return Container(); // Return a placeholder widget as StoreConnector needs to return a widget.
+      },
+    );
   }
 
   // toggle like button
@@ -66,15 +75,6 @@ class _SpecialCardState extends State<SpecialCard> {
                   fontColor: const Color.fromARGB(255, 189, 189, 189),
                 ),
                 const SizedBox(height: 10),
-                // Row(
-                //   children: [
-                //     TagsWidget(
-                //       icon: Icons.thermostat_auto_rounded,
-                //       // iconBackgroundColor: Color.fromARGB(255, 42, 42, 42),
-                //       tagName: station['temperature'].toString(),
-                //     )
-                //   ],
-                // ),
               ],
             ),
           ),
@@ -92,45 +92,50 @@ class _SpecialCardState extends State<SpecialCard> {
                         child: GetImageData(itinerary: widget.attraction)),
                   ),
                 ),
-                const SizedBox(height: 10),
-                LikeButton(
-                  isLiked: isLiked,
-                  day: Provider.of<CartModel>(context, listen: false)
-                      .cartItems
-                      .firstWhere(
-                          (item) => item['Name'] == widget.attraction['Name'],
-                          orElse: () => {'Day': 0})['Day'],
-                  onTap: () {
-                    toggleLikeButton();
-                    if (isLiked) {
-                      showModalBottomSheet<void>(
-                        context: context,
-                        builder: (BuildContext context) {
-                          // Get the list of itinerary days and daily plans
-                          List<String> itineraryDays = List.generate(
-                            widget.numberOfDays,
-                            (index) => 'Day ${index + 1}',
-                          );
-                          List<String> dailyPlans = List.generate(
-                            widget.numberOfDays,
-                            (index) => 'Plan ${index + 1}',
-                          );
+                StoreConnector<List<CartModel>, ViewModel>(
+                    converter: (store) => ViewModel.create(store),
+                    builder: (context, model) {
+                      return LikeButton(
+                        isLiked: isLiked,
+                        day: model.cartItems
+                            .firstWhere(
+                                (item) =>
+                                    item.name == widget.attraction['Name'],
+                                orElse: () => CartModel(day: 0))
+                            .day,
+                        onTap: () {
+                          toggleLikeButton();
+                          if (isLiked) {
+                            showModalBottomSheet<void>(
+                              context: context,
+                              builder: (BuildContext context) {
+                                // Get the list of itinerary days and daily plans
+                                List<String> itineraryDays = List.generate(
+                                  widget.numberOfDays,
+                                  (index) => 'Day ${index + 1}',
+                                );
+                                List<String> dailyPlans = List.generate(
+                                  widget.numberOfDays,
+                                  (index) => 'Plan ${index + 1}',
+                                );
 
-                          return ModalContent(
-                              itineraryDays: itineraryDays,
-                              dailyPlans: dailyPlans,
-                              attraction: widget.attraction,
-                              itineraryName: widget.itineraryName);
+                                return ModalContent(
+                                    itineraryDays: itineraryDays,
+                                    dailyPlans: dailyPlans,
+                                    attraction: widget.attraction,
+                                    itineraryName: widget.itineraryName);
+                              },
+                            );
+                          } else {
+                            model.onItemRemoved(widget.attraction['Name']);
+                            // Provider.of<CartModel>(context, listen: false)
+                            //     .removeItemFromCart(
+                            //   widget.attraction['Name'],
+                            // );
+                          }
                         },
                       );
-                    } else {
-                      Provider.of<CartModel>(context, listen: false)
-                          .removeItemFromCart(
-                        widget.attraction['Name'],
-                      );
-                    }
-                  },
-                ),
+                    }),
               ],
             ),
           ),
@@ -143,7 +148,7 @@ class _SpecialCardState extends State<SpecialCard> {
 
 class GetImageData extends StatelessWidget {
   final Map<String, dynamic> itinerary;
-  GetImageData({super.key, required this.itinerary});
+  const GetImageData({super.key, required this.itinerary});
 
   @override
   Widget build(BuildContext context) {
@@ -155,8 +160,8 @@ class GetImageData extends StatelessWidget {
       fit: BoxFit.cover,
       errorBuilder: (context, error, stackTrace) {
         return const Placeholder(
-          fallbackHeight: 200, 
-          color: Colors.grey, 
+          fallbackHeight: 200,
+          color: Colors.grey,
         );
       },
     );

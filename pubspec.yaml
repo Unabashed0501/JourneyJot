@@ -48,6 +48,9 @@ dependencies:
   provider: ^6.1.2
   flutter_expandable_fab: ^2.0.0
   google_fonts: ^6.2.1
+  redux: ^5.0.0
+  flutter_redux: ^0.10.0
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +81,7 @@ flutter:
   assets:
       # - assets/images/
       - assets/icons/
+      - lib/.env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

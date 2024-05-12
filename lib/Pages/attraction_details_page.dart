@@ -4,7 +4,7 @@ import 'package:my_tourist_app/Constants/map_consts.dart';
 class AttractionDetailsPage extends StatelessWidget {
   final Map<String, dynamic> attraction;
 
-  AttractionDetailsPage({required this.attraction});
+  const AttractionDetailsPage({super.key, required this.attraction});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class AttractionDetailsPage extends StatelessWidget {
         title: Text(attraction['Name']),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
